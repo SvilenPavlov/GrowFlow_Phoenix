@@ -5,7 +5,7 @@
         public Guid Id { get; set; }
 
         // Leviathan mapping
-        public int? LeviathanId { get; set; }
+        public string LeviathanId { get; set; }
 
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;

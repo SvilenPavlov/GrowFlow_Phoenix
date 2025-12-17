@@ -9,5 +9,6 @@ namespace GrowFlow_Phoenix.Data
             : base(options) { }
 
         public DbSet<Employee> Employees => Set<Employee>();
+        public DbSet<LeviathanSnapshotEntry> LeviathanSnapshotEntries => Set<LeviathanSnapshotEntry>();
     }
 }

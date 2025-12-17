@@ -1,6 +1,6 @@
 ﻿namespace GrowFlow_Phoenix.DTOs
 {
-    public class EmployeeResponseDto
+    public class EmployeeResponseDTO
     {
         public Guid Id { get; set; }
         public int? LeviathanId { get; set; }

@@ -23,7 +23,7 @@ namespace GrowFlow_Phoenix.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(EmployeeCreateDto dto)
+        public async Task<IActionResult> Create(EmployeeCreateDTO dto)
         {
             var employee = await _service.CreateAsync(dto);
             return Ok(employee);

@@ -1,14 +1,25 @@
 using GrowFlow_Phoenix.Data;
 using GrowFlow_Phoenix.Services;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "GrowFlow_Phoenix API",
+        Version = "v1",
+        Description = "CRUD API for Employees with Leviathan synchronization"
+    });
+});
 
 // EF Core SQLite
 builder.Services.AddDbContext<PhoenixDbContext>(options =>
@@ -16,49 +27,28 @@ builder.Services.AddDbContext<PhoenixDbContext>(options =>
 
 // Dependency injection
 builder.Services.AddScoped<EmployeeService>();
-builder.Services.AddHttpClient<LeviathanClient>(client =>
-{
-    client.BaseAddress = new Uri("https://leviathan.challenge.growflow.com");
-});
+builder.Services.AddHostedService<LeviathanSyncService>();
+builder.Services.AddHttpClient<LeviathanClient>();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PhoenixDbContext>();
+    db.Database.EnsureCreated(); // Creates phoenix.db if it doesn't exist
+}
 
-// Configure the HTTP request pipeline.
+// Configure middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "GrowFlow_Phoenix API V1");
+    });
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
-
-
-//var builder = WebApplication.CreateBuilder(args);
-
-//// Add services to the container.
-
-//builder.Services.AddControllers();
-//// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-//builder.Services.AddOpenApi();
-
-//var app = builder.Build();
-
-//// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.MapOpenApi();
-//}
-
-//app.UseHttpsRedirection();
-
-//app.UseAuthorization();
-
-//app.MapControllers();
-
-//app.Run();

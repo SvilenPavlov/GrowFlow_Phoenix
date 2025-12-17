@@ -15,7 +15,7 @@
             _leviathan = leviathan;
         }
 
-        public async Task<Employee> CreateAsync(EmployeeCreateDto dto)
+        public async Task<Employee> CreateAsync(EmployeeCreateDTO dto)
         {
             var employee = new Employee
             {
@@ -26,11 +26,12 @@
             };
 
             _db.Employees.Add(employee);
-            await _db.SaveChangesAsync();
+            //await _db.SaveChangesAsync();
 
             try
             {
                 employee.LeviathanId = await _leviathan.CreateEmployeeAsync(employee);
+                //add logic to check if this worked and handle it here
                 employee.IsSynced = true;
                 employee.LastSyncedAt = DateTime.UtcNow;
             }
@@ -46,19 +47,19 @@
         public async Task<List<Employee>> GetAllAsync() =>
             await _db.Employees.AsNoTracking().ToListAsync();
 
-        public async Task SyncFromLeviathanAsync()
-        {
-            var remoteEmployees = await _leviathan.GetEmployeesAsync();
+        //public async Task SyncFromLeviathanAsync()
+        //{
+        //    var employees = await _leviathan.GetEmployeesAsync();
 
-            foreach (var remote in remoteEmployees)
-            {
-                if (!_db.Employees.Any(e => e.LeviathanId == remote.LeviathanId))
-                {
-                    _db.Employees.Add(remote);
-                }
-            }
+        //    foreach (var e in employees)
+        //    {
+        //        if (!_db.Employees.Any(e => e.LeviathanId == e.LeviathanId))
+        //        {
+        //            _db.Employees.Add(e);
+        //        }
+        //    }
 
-            await _db.SaveChangesAsync();
-        }
+        //    await _db.SaveChangesAsync();
+        //}
     }
 }
