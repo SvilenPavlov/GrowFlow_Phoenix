@@ -4,6 +4,7 @@ namespace GrowFlow_Phoenix.DTOs
 {
     public class LeviathanCustomerResponseDTO
     {
+        [JsonPropertyName("employid")]
         public Guid LeviathanEmployeeId { get; set; }
 
         [JsonPropertyName("id")]

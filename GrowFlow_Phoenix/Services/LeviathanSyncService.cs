@@ -7,20 +7,18 @@ namespace GrowFlow_Phoenix.Services
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<LeviathanSyncService> _logger;
-        //private readonly PhoenixDbContext _db;
 
         public LeviathanSyncService(
-            PhoenixDbContext db,
             IServiceScopeFactory scopeFactory,
             ILogger<LeviathanSyncService> logger)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
-            //_db = db;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            //This methods are commented out as they were blocking the swagger browser page.
             _logger.LogInformation("Leviathan sync service started.");
 
             while (!stoppingToken.IsCancellationRequested)
@@ -31,10 +29,18 @@ namespace GrowFlow_Phoenix.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Leviathan sync failed");
+                    _logger.LogError(ex, "Leviathan snapshot download failed");
                 }
 
-                SynceEmployeesToSnapshot(stoppingToken);
+                try
+                {
+                    await SynceEmployeesToSnapshot(stoppingToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Local Leviathan snapshot sync failed");
+                }
+
                 // Wait 5 minutes
                 await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
@@ -57,13 +63,13 @@ namespace GrowFlow_Phoenix.Services
                     Id = Guid.NewGuid(),
                     Name = leviathanEmployee.Name,
                     Address = leviathanEmployee.Address,
-                    LeviathanEmployeeId= leviathanEmployee.LeviathanEmployeeId,
-                    LeviathanId  = leviathanEmployee.LeviathanId,
+                    LeviathanEmployeeId = leviathanEmployee.LeviathanEmployeeId,
+                    LeviathanId = leviathanEmployee.LeviathanId,
                 };
 
                 db.LeviathanSnapshotEntries.Add(localEntry);
             }
-            
+
             await db.SaveChangesAsync(ct);
         }
 

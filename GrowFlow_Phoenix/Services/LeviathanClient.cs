@@ -2,6 +2,7 @@
 {
     using GrowFlow_Phoenix.Data;
     using GrowFlow_Phoenix.DTOs;
+    using System;
     using System.Net.Http.Json;
     using System.Text;
     using System.Text.Json;
@@ -65,8 +66,26 @@
             try
             {
                 var url = $"/employee/?ApiUser={_apiUser}&ApiKey={_apiKey}";
-                var response = await _http.GetFromJsonAsync<List<LeviathanCustomerResponseDTO>>(url);
-                return response;
+                var jsonString = await _http.GetStringAsync(url);
+                var rawList = System.Text.Json.JsonSerializer.Deserialize<List<Dictionary<string, object>>>(jsonString);
+
+                var result = new List<LeviathanCustomerResponseDTO>();
+                                
+                foreach (var item in rawList)
+                {
+                    var dto = new LeviathanCustomerResponseDTO
+                    {
+                        //This mapping is incorrect as I was trying to parse Leviathan customer entries to Phoenix employee ones when I disovered Leviathan has its own employee endpoint. Will think about how to address this.
+                        //Name =
+                        //Address =
+                        //LeviathanEmployeeId
+                        //LeviathanId =
+                    };
+
+                    result.Add(dto);
+                }
+
+                return result;
             }
             catch (Exception)
             {
