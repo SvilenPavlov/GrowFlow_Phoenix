@@ -1,0 +1,5 @@
+latest commit:
+
+changed snapshot model to reflect Leviathan entities endpoint data model instead of customer
+added automapper
+swagger launch browser disabled

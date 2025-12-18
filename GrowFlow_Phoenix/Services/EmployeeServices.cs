@@ -1,37 +1,35 @@
 ﻿namespace GrowFlow_Phoenix.Services
 {
+    using AutoMapper;
     using GrowFlow_Phoenix.Data;
-    using GrowFlow_Phoenix.DTOs;
+    using GrowFlow_Phoenix.DTOs.Phoenix.Employee;
     using Microsoft.EntityFrameworkCore;
 
     public class EmployeeService
     {
         private readonly PhoenixDbContext _db;
         private readonly LeviathanClient _leviathan;
+        private readonly IMapper _mapper;
 
-        public EmployeeService(PhoenixDbContext db, LeviathanClient leviathan)
+        public EmployeeService(PhoenixDbContext db, LeviathanClient leviathan, IMapper mapper)
         {
             _db = db;
             _leviathan = leviathan;
+            _mapper = mapper;
         }
 
         public async Task<Employee> CreateAsync(EmployeeCreateDTO dto)
         {
-            var employee = new Employee
-            {
-                Id = Guid.NewGuid(),
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Telephone = dto.Telephone
-            };
+            var employee = _mapper.Map<Employee>(dto);
+            employee.Id = Guid.NewGuid();
 
             _db.Employees.Add(employee);
-            //await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
 
             try
             {
                 employee.LeviathanId = await _leviathan.CreateEmployeeAsync(employee);
-                //add logic to check if this worked and handle it here
+                //TODO add logic to check if this worked and handle it here
                 employee.IsSynced = true;
                 employee.LastSyncedAt = DateTime.UtcNow;
             }

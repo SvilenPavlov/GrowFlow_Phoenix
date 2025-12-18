@@ -1,0 +1,76 @@
+{
+  "StatusCode": 200,
+  "ReasonPhrase": "OK",
+  "Version": "1.1",
+  "Headers": {
+    "Connection": [
+      "keep-alive"
+    ],
+    "Access-Control-Allow-Origin": [
+      "*"
+    ],
+    "Cache-Control": [
+      "private"
+    ],
+    "ETag": [
+      "W/\u0022a7-0L2iPWvGAz4L5LKgubid95P5kXg\u0022"
+    ],
+    "Server": [
+      "Google",
+      "Frontend"
+    ],
+    "Strict-Transport-Security": [
+      "max-age=31556926"
+    ],
+    "Traceparent": [
+      "00-9d9b004daf9bb6cd13ae5c2fd6a9c158-97faafecff4eb708-01"
+    ],
+    "X-Cloud-Trace-Context": [
+      "9d9b004daf9bb6cd13ae5c2fd6a9c158/10951258876335273736;o=1"
+    ],
+    "X-Country-Code": [
+      "BG"
+    ],
+    "X-Powered-By": [
+      "Express"
+    ],
+    "Accept-Ranges": [
+      "bytes"
+    ],
+    "Date": [
+      "Thu, 18 Dec 2025 13:55:37 GMT"
+    ],
+    "X-Served-By": [
+      "cache-sof1510044-SOF"
+    ],
+    "X-Cache": [
+      "MISS"
+    ],
+    "X-Cache-Hits": [
+      "0"
+    ],
+    "X-Timer": [
+      "S1766066137.972922,VS0,VE793"
+    ],
+    "Vary": [
+      "cookie",
+      "need-authorization",
+      "x-fh-requested-host",
+      "accept-encoding"
+    ],
+    "Alt-Svc": [
+      "h3=\u0022:443\u0022",
+      "h3-29=\u0022:443\u0022",
+      "h3-27=\u0022:443\u0022"
+    ]
+  },
+  "ContentHeaders": {
+    "Content-Length": [
+      "167"
+    ],
+    "Content-Type": [
+      "application/json; charset=utf-8"
+    ]
+  },
+  "Body": "{\u0022firstName\u0022:\u0022John\u0022,\u0022lastName\u0022:\u0022Example 69\u0022,\u0022telephone\u0022:\u00220888 888 888\u0022,\u0022role\u0022:\u0022baloon-operator\u0022,\u0022email\u0022:\u0022testLV@gmail.com\u0022,\u0022id\u0022:\u00226ff85092-7cfb-407a-bbe9-3a141d6f4149\u0022}"
+}

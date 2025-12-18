@@ -1,3 +1,4 @@
+using GrowFlow_Phoenix;
 using GrowFlow_Phoenix.Data;
 using GrowFlow_Phoenix.Services;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ builder.Services.AddDbContext<PhoenixDbContext>(options =>
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddHostedService<LeviathanSyncService>();
 builder.Services.AddHttpClient<LeviathanClient>();
+
+builder.Services.AddAutoMapper(c=>c.AddProfile(typeof(MappingConfig)));
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())

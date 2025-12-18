@@ -1,11 +1,21 @@
-﻿namespace GrowFlow_Phoenix.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace GrowFlow_Phoenix.DTOs
 {
     public class EmployeeResponseDTO
     {
-        public Guid Id { get; set; }
-        public int? LeviathanId { get; set; }
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-        public bool IsSynced { get; set; }
+        [JsonPropertyName("firstName")]
+        public string FirstName { get; set; }
+        [JsonPropertyName("lastName")]
+        public string LastName { get; set; }
+        [JsonPropertyName("id")]
+        public Guid LeviathanId { get; set; }
+        [JsonPropertyName("telephone")]
+        public string Telephone { get; set; } = null!;
+        [JsonPropertyName("role")]
+        public string? Role { get; set; }
+        [JsonPropertyName("email")]
+        public string? Email { get; set; }
+        //public bool IsSynced { get; set; }
     }
 }

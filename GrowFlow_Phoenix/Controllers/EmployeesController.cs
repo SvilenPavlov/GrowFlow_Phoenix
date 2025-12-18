@@ -1,4 +1,4 @@
-﻿using GrowFlow_Phoenix.DTOs;
+﻿using GrowFlow_Phoenix.DTOs.Phoenix.Employee;
 using GrowFlow_Phoenix.Services;
 using Microsoft.AspNetCore.Mvc;
 

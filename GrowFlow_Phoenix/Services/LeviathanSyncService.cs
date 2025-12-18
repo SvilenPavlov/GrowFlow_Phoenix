@@ -60,11 +60,11 @@ namespace GrowFlow_Phoenix.Services
                 var leviathanEmployee = leviathanEmployees[i];
                 var localEntry = new LeviathanSnapshotEntry
                 {
-                    Id = Guid.NewGuid(),
-                    Name = leviathanEmployee.Name,
-                    Address = leviathanEmployee.Address,
-                    LeviathanEmployeeId = leviathanEmployee.LeviathanEmployeeId,
-                    LeviathanId = leviathanEmployee.LeviathanId,
+                    //Id = Guid.NewGuid(),
+                    //Name = leviathanEmployee.Name,
+                    //Address = leviathanEmployee.Address,
+                    //LeviathanEmployeeId = leviathanEmployee.LeviathanEmployeeId,
+                    //LeviathanId = leviathanEmployee.LeviathanId,
                 };
 
                 db.LeviathanSnapshotEntries.Add(localEntry);
