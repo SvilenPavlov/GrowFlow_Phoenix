@@ -1,9 +1,9 @@
 ﻿namespace GrowFlow_Phoenix.Services
 {
     using AutoMapper;
-    using GrowFlow_Phoenix.Data;
     using GrowFlow_Phoenix.DTOs;
     using GrowFlow_Phoenix.DTOs.Leviathan.Employee;
+    using GrowFlow_Phoenix.Models;
     using System;
     using System.Net;
     using System.Net.Http.Json;
@@ -37,13 +37,14 @@
 
             var request = new LeviathanApiRequest<EmployeeCreateDTO>(leviathanDto, _apiUser, _apiKey);
             var jsonString = JsonSerializer.Serialize(request);
-            var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            var httpStringContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-            //var localResponse = await File.ReadAllTextAsync(filePath); //testing
-            var response = RecreateFromLoggedResponse(filePath); //testing
-            //var response = await _http.PostAsync(_employeeEndpoint, content); // API CALL
-            //LogResponse(filePath, response);
-
+            //var localHttpResponseMessage = await File.ReadAllTextAsync(filePath); //testing probably delete
+            HttpResponseMessage response = RecreateFromLoggedResponse(filePath); // Reads from locally stored Leviathan API response
+            //var response = await _http.PostAsync(_employeeEndpoint, content); // Live API call
+            //LogResponse(filePath, response); // logs live Leviathan API response for Employees Create to avoid bloating its data
+            var content = await response.Content.ReadAsStringAsync();
+            var responseDto = JsonSerializer.Deserialize<EmployeeResponseDTO>(content);
 
             if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 throw new InvalidOperationException("Business rule violation from Leviathan");
@@ -52,7 +53,7 @@
                 throw new HttpRequestException("Leviathan failure");
             // Leviathan does not return ID cleanly — document this in README
 
-            return string.Empty;
+            return responseDto?.LeviathanId.ToString() ?? string.Empty;
         }
 
         private HttpResponseMessage RecreateFromLoggedResponse(string filePath)
@@ -122,7 +123,7 @@
             await File.WriteAllTextAsync(filePath, json);
         }
 
-        public async Task<List<LeviathanCustomerResponseDTO>> GetEmployeesAsync()
+        public async Task<List<EmployeeResponseDTO>> GetEmployeesAsync()
         {
             try
             {
@@ -130,11 +131,11 @@
                 var jsonString = await _http.GetStringAsync(url);
                 var rawList = System.Text.Json.JsonSerializer.Deserialize<List<Dictionary<string, object>>>(jsonString);
 
-                var result = new List<LeviathanCustomerResponseDTO>();
+                var result = new List<EmployeeResponseDTO>();
 
                 foreach (var item in rawList)
                 {
-                    var dto = new LeviathanCustomerResponseDTO
+                    var dto = new EmployeeResponseDTO
                     {
                         //This mapping is incorrect as I was trying to parse Leviathan customer entries to Phoenix employee ones when I disovered Leviathan has its own employee endpoint. Will think about how to address this.
                         //Name =

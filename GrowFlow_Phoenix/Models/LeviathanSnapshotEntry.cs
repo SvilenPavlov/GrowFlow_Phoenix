@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace GrowFlow_Phoenix.Data
+namespace GrowFlow_Phoenix.Models
 {
     public class LeviathanSnapshotEntry
     {

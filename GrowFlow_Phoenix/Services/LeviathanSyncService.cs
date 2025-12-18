@@ -1,4 +1,5 @@
 ﻿using GrowFlow_Phoenix.Data;
+using GrowFlow_Phoenix.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrowFlow_Phoenix.Services
@@ -89,23 +90,23 @@ namespace GrowFlow_Phoenix.Services
                 {
                     var leviathanEmployee = leviathanEmployees[i];
                     // map + upsert
-                    var phoenixEmployeeMatch = phoenixEmployees.FirstOrDefault(x => x.Id == leviathanEmployee.LeviathanEmployeeId);
-                    if (phoenixEmployeeMatch != null)
-                    {
-                        var firstName = string.Empty;
-                        var lastName = string.Empty;
-                        if (string.IsNullOrEmpty(leviathanEmployee.Name) && string.IsNullOrWhiteSpace(leviathanEmployee.Name))
-                        {
-                            firstName = leviathanEmployee.Name.Split(' ')[0]; //basic name structure assumption
-                            lastName = string.Join(" ", leviathanEmployee.Name.Split(' ').Skip(1)); //everything after first string considered last name
-                        }
+                    //var phoenixEmployeeMatch = phoenixEmployees.FirstOrDefault(x => x.Id == leviathanEmployee.LeviathanEmployeeId);
+                    //if (phoenixEmployeeMatch != null)
+                    //{
+                    //    var firstName = string.Empty;
+                    //    var lastName = string.Empty;
+                    //    if (string.IsNullOrEmpty(leviathanEmployee.Name) && string.IsNullOrWhiteSpace(leviathanEmployee.Name))
+                    //    {
+                    //        firstName = leviathanEmployee.Name.Split(' ')[0]; //basic name structure assumption
+                    //        lastName = string.Join(" ", leviathanEmployee.Name.Split(' ').Skip(1)); //everything after first string considered last name
+                    //    }
 
-                        phoenixEmployeeMatch.FirstName = firstName;
-                        phoenixEmployeeMatch.LastName = lastName;
-                        phoenixEmployeeMatch.LeviathanId = leviathanEmployee.LeviathanId.ToString();
-                        phoenixEmployeeMatch.LastSyncedAt = DateTime.UtcNow;
-                        phoenixEmployeeMatch.IsSynced = true;
-                    }
+                    //    phoenixEmployeeMatch.FirstName = firstName;
+                    //    phoenixEmployeeMatch.LastName = lastName;
+                    //    phoenixEmployeeMatch.LeviathanId = leviathanEmployee.LeviathanId.ToString();
+                    //    phoenixEmployeeMatch.LastSyncedAt = DateTime.UtcNow;
+                    //    phoenixEmployeeMatch.IsSynced = true;
+                    //}
                 }
             }
             catch (Exception ex)

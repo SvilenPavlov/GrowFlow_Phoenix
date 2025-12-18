@@ -1,6 +1,9 @@
-﻿namespace GrowFlow_Phoenix.Data
+﻿using GrowFlow_Phoenix.Models.IModels;
+using GrowFlow_Phoenix.Models.Utility;
+
+namespace GrowFlow_Phoenix.Models
 {
-    public class Employee
+    public class Employee : IAuditable<AuditRecord>
     {
         public Guid Id { get; set; }
 
@@ -14,7 +17,7 @@
         public string? Role { get; set; }
         public bool IsSynced { get; set; }
         public DateTime? LastSyncedAt { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public ICollection<EmployeeExternalId> ExternalIds { get; set; } = new List<EmployeeExternalId>();
+        public AuditRecord AuditRecord { get; set; } = new AuditRecord();
     }
 }

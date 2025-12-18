@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using GrowFlow_Phoenix.Data;
+using GrowFlow_Phoenix.Models;
 
 namespace GrowFlow_Phoenix
 {
@@ -9,6 +9,7 @@ namespace GrowFlow_Phoenix
         {
             CreateMap<GrowFlow_Phoenix.DTOs.Phoenix.Employee.EmployeeCreateDTO, Employee>().ReverseMap();
             CreateMap<GrowFlow_Phoenix.DTOs.Leviathan.Employee.EmployeeCreateDTO, Employee>().ReverseMap();
+            CreateMap<Employee,GrowFlow_Phoenix.DTOs.Phoenix.Employee.EmployeeResponseDTO>().ReverseMap();
         }
     }
 }
