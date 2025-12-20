@@ -1,23 +1,27 @@
-﻿namespace GrowFlow_Phoenix.Services
+﻿namespace GrowFlow_Phoenix.Infrastructure.Phoenix.Services
 {
     using AutoMapper;
     using GrowFlow_Phoenix.Data;
     using GrowFlow_Phoenix.DTOs.Phoenix.Employee;
+    using GrowFlow_Phoenix.Infrastructure.Leviathan.Services;
     using GrowFlow_Phoenix.Models;
+    using GrowFlow_Phoenix.Models.Phoenix;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
 
     public class EmployeeService
     {
         private readonly PhoenixDbContext _db;
         private readonly LeviathanClient _leviathan;
         private readonly IMapper _mapper;
-        private readonly string leviathanProviderName = "Leviathan";
+        private readonly string _leviathanProviderName;
 
-        public EmployeeService(PhoenixDbContext db, LeviathanClient leviathan, IMapper mapper)
+        public EmployeeService(PhoenixDbContext db, IConfiguration configuration, LeviathanClient leviathan, IMapper mapper)
         {
             _db = db;
             _leviathan = leviathan;
             _mapper = mapper;
+            _leviathanProviderName = configuration.GetValue<string>("LeviathanApi:ProviderName");
         }
 
         public async Task<EmployeeResponseDTO> CreateAsync(EmployeeCreateDTO dto)
@@ -31,16 +35,14 @@
             try
             {
                 employee.LeviathanId = await _leviathan.CreateEmployeeAsync(employee);
-                //TODO add logic to check if this worked and handle it here
                 employee.IsSynced = true;
                 employee.LastSyncedAt = DateTime.UtcNow;
 
-                //Create related db entry:
                 var employeeExternalId = new EmployeeExternalId
                 {
                     EmployeeId = employee.Id,
-                    Provider = leviathanProviderName,
-                    ExternalId = employee.LeviathanId
+                    Provider = _leviathanProviderName,
+                    ExternalId = employee.LeviathanId == null ? string.Empty : employee.LeviathanId.ToString()
                 };
                 _db.EmployeeExternalIds.Add(employeeExternalId);
             }
@@ -52,7 +54,7 @@
             var responseDTO = _mapper.Map<EmployeeResponseDTO>(employee);
             responseDTO.ExternallySyncedEntries = new Dictionary<string, bool>
             {
-                { leviathanProviderName, employee.IsSynced }
+                { _leviathanProviderName, employee.IsSynced }
             };
 
             await _db.SaveChangesAsync();
@@ -62,19 +64,20 @@
         public async Task<List<Employee>> GetAllAsync() =>
             await _db.Employees.AsNoTracking().ToListAsync();
 
-        //public async Task SyncFromLeviathanAsync()
-        //{
-        //    var employees = await _leviathan.GetEmployeesAsync();
+        public async Task SyncFromLeviathanAsync(CancellationToken stopToken)
+        {
+            var leviathanEmployees = await _leviathan.GetEmployeesAsync(stopToken);
 
-        //    foreach (var e in employees)
-        //    {
-        //        if (!_db.Employees.Any(e => e.LeviathanId == e.LeviathanId))
-        //        {
-        //            _db.Employees.Add(e);
-        //        }
-        //    }
+            foreach (var leviathanEmployee in leviathanEmployees)
+            {
+                if (_db.Employees.Any(e => e.LeviathanId == e.LeviathanId))
+                {
+                    var localEmployee = _db.Employees.FirstOrDefault(localEmp => localEmp.LeviathanId == leviathanEmployee.LeviathanId);
+                    _mapper.Map(leviathanEmployee, localEmployee); // we consider Leviathan a source of truth so no validation is performed on whether it contains empty/null values, although it might be a good idea to do so
+                }
+            }
 
-        //    await _db.SaveChangesAsync();
-        //}
+            await _db.SaveChangesAsync(stopToken);
+        }
     }
 }

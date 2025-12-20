@@ -1,4 +1,4 @@
-﻿namespace GrowFlow_Phoenix.Models.IModels
+﻿namespace GrowFlow_Phoenix.Models.Utility.IModels
 {
     public interface IAuditable <T>
     {

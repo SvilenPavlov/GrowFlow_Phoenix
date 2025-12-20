@@ -1,5 +1,5 @@
 ﻿using GrowFlow_Phoenix.DTOs.Phoenix.Employee;
-using GrowFlow_Phoenix.Services;
+using GrowFlow_Phoenix.Infrastructure.Phoenix.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GrowFlow_Phoenix.Controllers

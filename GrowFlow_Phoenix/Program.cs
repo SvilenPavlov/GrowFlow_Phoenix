@@ -1,6 +1,7 @@
 using GrowFlow_Phoenix;
 using GrowFlow_Phoenix.Data;
-using GrowFlow_Phoenix.Services;
+using GrowFlow_Phoenix.Infrastructure.Leviathan.Services;
+using GrowFlow_Phoenix.Infrastructure.Phoenix.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;

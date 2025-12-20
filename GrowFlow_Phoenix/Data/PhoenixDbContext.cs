@@ -1,6 +1,8 @@
-﻿using GrowFlow_Phoenix.Models;
-using GrowFlow_Phoenix.Models.IModels;
+﻿using GrowFlow_Phoenix.Models.Leviathan;
+using GrowFlow_Phoenix.Models.Phoenix;
 using GrowFlow_Phoenix.Models.Utility;
+using GrowFlow_Phoenix.Models.Utility.IModels;
+using GrowFlow_Phoenix.Models.Utility.IUtility;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
@@ -41,11 +43,15 @@ namespace GrowFlow_Phoenix.Data
                 {
                     modded.AuditRecord.LastModifiedAt = utcNow;
                 }
+                if ((entry.State == EntityState.Added || entry.State == EntityState.Modified) && entry.Entity is ISyncable syncAdded)
+                {
+                    syncAdded.LastSyncedAt = DateTime.UtcNow;
+                }
             }
         }
 
         public DbSet<Employee> Employees => Set<Employee>();
-        public DbSet<LeviathanSnapshotEntry> LeviathanSnapshotEntries => Set<LeviathanSnapshotEntry>();
+        public DbSet<LeviathanEmployeeCache> LeviathanSnapshotEntries => Set<LeviathanEmployeeCache>();
         public DbSet<EmployeeExternalId> EmployeeExternalIds => Set<EmployeeExternalId>();
 
     }

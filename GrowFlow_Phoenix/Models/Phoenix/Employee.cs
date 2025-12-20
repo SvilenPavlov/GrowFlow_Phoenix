@@ -1,15 +1,13 @@
-﻿using GrowFlow_Phoenix.Models.IModels;
-using GrowFlow_Phoenix.Models.Utility;
+﻿using GrowFlow_Phoenix.Models.Utility;
+using GrowFlow_Phoenix.Models.Utility.IModels;
 
-namespace GrowFlow_Phoenix.Models
+namespace GrowFlow_Phoenix.Models.Phoenix
 {
     public class Employee : IAuditable<AuditRecord>
     {
         public Guid Id { get; set; }
 
-        // Leviathan mapping
-        public string? LeviathanId { get; set; }
-
+        public Guid? LeviathanId { get; set; } //this might be a non-valid Guid as per Leviathan
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string Telephone { get; set; } = null!;

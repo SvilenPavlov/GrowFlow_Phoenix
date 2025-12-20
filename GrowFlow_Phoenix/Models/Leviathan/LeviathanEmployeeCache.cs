@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using GrowFlow_Phoenix.Models.Utility.IUtility;
+using System.Text.Json.Serialization;
 
-namespace GrowFlow_Phoenix.Models
+namespace GrowFlow_Phoenix.Models.Leviathan
 {
-    public class LeviathanSnapshotEntry
+    public class LeviathanEmployeeCache : ISyncable
     {
         public Guid Id { get; set; }
 
@@ -18,7 +19,6 @@ namespace GrowFlow_Phoenix.Models
         public string? Role { get; set; }
         [JsonPropertyName("email")]
         public string? Email { get; set; }
-  
         public DateTime LastSyncedAt { get; set; }
     }
 }

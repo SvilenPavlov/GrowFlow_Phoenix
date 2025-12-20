@@ -1,5 +1,4 @@
-latest commit:
-
-changed snapshot model to reflect Leviathan entities endpoint data model instead of customer
-added automapper
-swagger launch browser disabled
+centralized endpoint paths to appsettings.json
+finalized local employee entries sync from leviathan 
+cleaned services and requests folder structure 
+cleaning up leviathan request types
