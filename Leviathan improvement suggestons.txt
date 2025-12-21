@@ -1,3 +1,0 @@
-
-normalize field name casing
-validate phone number and email, saw examples of invalid ones

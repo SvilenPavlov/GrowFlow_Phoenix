@@ -29,8 +29,11 @@ builder.Services.AddDbContext<PhoenixDbContext>(options =>
 
 // Dependency injection
 builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<LeviathanSyncManager>();
 builder.Services.AddHostedService<LeviathanSyncService>();
 builder.Services.AddHttpClient<LeviathanClient>();
+
+
 
 builder.Services.AddAutoMapper(c=>c.AddProfile(typeof(MappingConfig)));
 

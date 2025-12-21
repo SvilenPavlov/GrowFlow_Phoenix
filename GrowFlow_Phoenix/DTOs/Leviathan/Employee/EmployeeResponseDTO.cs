@@ -6,21 +6,18 @@ namespace GrowFlow_Phoenix.DTOs.Leviathan.Employee
 {
     public class EmployeeResponseDTO
     {
-        [Required]
         [JsonPropertyName("firstName")]
         [JsonConverter(typeof(JsonStringConverter))]
-        public string FirstName { get; set; }
-        [Required]
+        public string FirstName { get; set; } = null!;
         [JsonPropertyName("lastName")]
         [JsonConverter(typeof(JsonStringConverter))]
-        public string LastName { get; set; }
-        [Required]
+        public string LastName { get; set; } = null!;
         [JsonPropertyName("telephone")]
         [JsonConverter(typeof(JsonStringConverter))]
         public string Telephone { get; set; } = null!;
         [JsonPropertyName("role")]
         [JsonConverter(typeof(JsonStringConverter))]
-        public string? Role { get; set; }
+        public string Role { get; set; } = null!;
         //Leviathan accepts non-email values
         [JsonPropertyName("email")]
         [JsonConverter(typeof(JsonStringConverter))]

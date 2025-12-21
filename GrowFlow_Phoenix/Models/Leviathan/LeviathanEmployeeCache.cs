@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace GrowFlow_Phoenix.Models.Leviathan
 {
-    public class LeviathanEmployeeCache : ISyncable
+    public class LeviathanEmployeeCache : ISyncable, IEmployeeComparable
     {
         public Guid Id { get; set; }
 
@@ -11,14 +11,15 @@ namespace GrowFlow_Phoenix.Models.Leviathan
         public string FirstName { get; set; }
         [JsonPropertyName("lastName")]
         public string LastName { get; set; }
-        [JsonPropertyName("id")]
-        public Guid LeviathanId { get; set; }
+       
         [JsonPropertyName("telephone")]
         public string Telephone { get; set; } = null!;
         [JsonPropertyName("role")]
         public string? Role { get; set; }
         [JsonPropertyName("email")]
         public string? Email { get; set; }
+        [JsonPropertyName("id")]
+        public Guid LeviathanId { get; set; }
         public DateTime LastSyncedAt { get; set; }
     }
 }

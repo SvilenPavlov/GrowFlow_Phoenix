@@ -16,16 +16,16 @@ namespace GrowFlow_Phoenix.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(CancellationToken stopToken)
         {
-            var employees = await _service.GetAllAsync();
+            var employees = await _service.GetAllAsync(stopToken);
             return Ok(employees);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(EmployeeCreateDTO dto)
+        public async Task<IActionResult> Create(EmployeeCreateDTO dto, CancellationToken stopToken)
         {
-            var employee = await _service.CreateAsync(dto);
+            var employee = await _service.CreateAsync(dto, stopToken);
             return Ok(employee);
         }
     }

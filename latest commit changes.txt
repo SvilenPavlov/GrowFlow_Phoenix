@@ -1,4 +1,0 @@
-centralized endpoint paths to appsettings.json
-finalized local employee entries sync from leviathan 
-cleaned services and requests folder structure 
-cleaning up leviathan request types

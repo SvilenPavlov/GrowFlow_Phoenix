@@ -3,6 +3,7 @@ using System;
 using GrowFlow_Phoenix.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GrowFlow_Phoenix.Migrations
 {
     [DbContext(typeof(PhoenixDbContext))]
-    partial class PhoenixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251221163545_Placed IsSynced and LastSynced properties in ExternalIds and removed from Employees. Removed LeviathanId prop as not needed")]
+    partial class PlacedIsSyncedandLastSyncedpropertiesinExternalIdsandremovedfromEmployeesRemovedLeviathanIdpropasnotneeded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.11");
@@ -55,7 +58,7 @@ namespace GrowFlow_Phoenix.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LeviathanEmployeeCacheEntries", (string)null);
+                    b.ToTable("LeviathanEmployeeCacheEntries");
                 });
 
             modelBuilder.Entity("GrowFlow_Phoenix.Models.Phoenix.Employee", b =>
@@ -84,7 +87,7 @@ namespace GrowFlow_Phoenix.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("GrowFlow_Phoenix.Models.Phoenix.EmployeeExternalId", b =>
@@ -111,7 +114,7 @@ namespace GrowFlow_Phoenix.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("EmployeeExternalIds", (string)null);
+                    b.ToTable("EmployeeExternalIds");
                 });
 
             modelBuilder.Entity("GrowFlow_Phoenix.Models.Phoenix.Employee", b =>
@@ -129,7 +132,7 @@ namespace GrowFlow_Phoenix.Migrations
 
                             b1.HasKey("EmployeeId");
 
-                            b1.ToTable("Employees", (string)null);
+                            b1.ToTable("Employees");
 
                             b1.WithOwner()
                                 .HasForeignKey("EmployeeId");

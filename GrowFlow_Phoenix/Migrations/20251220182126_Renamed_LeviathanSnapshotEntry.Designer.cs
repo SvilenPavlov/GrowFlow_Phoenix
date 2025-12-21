@@ -3,6 +3,7 @@ using System;
 using GrowFlow_Phoenix.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GrowFlow_Phoenix.Migrations
 {
     [DbContext(typeof(PhoenixDbContext))]
-    partial class PhoenixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251220182126_Renamed_LeviathanSnapshotEntry")]
+    partial class Renamed_LeviathanSnapshotEntry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.11");
@@ -55,7 +58,7 @@ namespace GrowFlow_Phoenix.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LeviathanEmployeeCacheEntries", (string)null);
+                    b.ToTable("LeviathanEmployeeCacheEntries");
                 });
 
             modelBuilder.Entity("GrowFlow_Phoenix.Models.Phoenix.Employee", b =>
@@ -71,8 +74,17 @@ namespace GrowFlow_Phoenix.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsSynced")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastSyncedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("LeviathanId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Role")
@@ -84,7 +96,7 @@ namespace GrowFlow_Phoenix.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("GrowFlow_Phoenix.Models.Phoenix.EmployeeExternalId", b =>
@@ -100,9 +112,6 @@ namespace GrowFlow_Phoenix.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("LastSyncedAt")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Provider")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -111,7 +120,7 @@ namespace GrowFlow_Phoenix.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("EmployeeExternalIds", (string)null);
+                    b.ToTable("EmployeeExternalIds");
                 });
 
             modelBuilder.Entity("GrowFlow_Phoenix.Models.Phoenix.Employee", b =>
@@ -129,7 +138,7 @@ namespace GrowFlow_Phoenix.Migrations
 
                             b1.HasKey("EmployeeId");
 
-                            b1.ToTable("Employees", (string)null);
+                            b1.ToTable("Employees");
 
                             b1.WithOwner()
                                 .HasForeignKey("EmployeeId");

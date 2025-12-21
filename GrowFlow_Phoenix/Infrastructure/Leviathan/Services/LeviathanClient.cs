@@ -17,7 +17,10 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
     {
         private readonly HttpClient _http;
         private readonly IMapper _mapper;
-        public string _employeeEndpoint;
+        private string _employeeEndpoint;
+        private string _testFilePathCreate = Path.Combine("TestResponses", "CreateEmployee.json");
+        private string _testFilePathGet = Path.Combine("TestResponses", "GetEmployees.json");
+        private bool _isTesting;
 
         public LeviathanClient(HttpClient http, IConfiguration configuration, IMapper mapper)
         {
@@ -26,23 +29,23 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
             _http.BaseAddress = new Uri(configuration.GetValue<string>("LeviathanApi:BaseURL"));
             _employeeEndpoint = configuration.GetValue<string>("LeviathanApi:Endpoints:EmployeeEndpoint");
             _mapper = mapper;
+            _isTesting = configuration.GetValue<bool>("LeviathanApi:Settings:UseLocalResponse");
         }
 
         public async Task<Guid> CreateEmployeeAsync(Employee employee)
         {
-
             var requestDto = _mapper.Map<EmployeeCreateDTO>(employee);
 
             var request = new PayloadRequest<EmployeeCreateDTO>(requestDto);
             var jsonRequest = JsonSerializer.Serialize(request);
             var httpContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-            var filePath = Path.Combine("TestResponses", "CreateEmployee.json"); // For teesting only.
-            //HttpResponseMessage response = RecreateFromLoggedResponse(filePath); // 
-            //HttpResponseMessage response = await RecreateResponseFromText(filePath); //For testing: recreates HttpResponseMessage from locally stored Leviathan API response.
-            var response = await _http.PostAsync(_employeeEndpoint, httpContent); // Live API call. Uncomment to test live API after saving file once.
-            //LogResponse(filePath, response); // For testing: logs Leviathan API response locally for to avoid bloating its data. When testing, uncomment this and above row only once to save file, then use Live API Call.
-            await SaveHttpResponseToFile(response, filePath); 
+            Uri uri = new Uri(_employeeEndpoint, UriKind.Relative);
+            
+            var response = await AquireResponse(_isTesting, _testFilePathCreate, uri, httpContent);
+
+
+
             var responseJson = await response.Content.ReadAsStringAsync();
             var responseDto = JsonSerializer.Deserialize<EmployeeResponseDTO>(responseJson);
 
@@ -61,7 +64,7 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
             try
             {
                 var request = new BaseRequest();
-                //This debauchery is necessary due to Leviathan requiring authentication in query parameters instead of headers 
+                // Necessary uglyness due to Leviathan requiring authentication in query parameters instead of headers 
                 var url = QueryHelpers.AddQueryString(_employeeEndpoint,
                     new Dictionary<string, string?>
                     {
@@ -70,87 +73,21 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
                     });
 
                 var uri = new Uri(url, UriKind.Relative);
-                var filePath = Path.Combine("TestResponses", "GetEmployees.json");
-                HttpResponseMessage response = await RecreateResponseFromText(filePath);  //For testing: recreates HttpResponseMessage from locally stored Leviathan API response.
-                //var response = await _http.GetAsync(uri); // Live API Call
+                var response = await AquireResponse(_isTesting, _testFilePathGet, uri);
+
                 var jsonString = await response.Content.ReadAsStringAsync();
-                //await SaveHttpResponseToFile(response, filePath);  // For testing: logs Leviathan API response locally for to avoid bloating its data. When testing, uncomment this and above row only once to save file, then use Live API Call.
                 result = JsonSerializer.Deserialize<List<EmployeeResponseDTO>>(jsonString);
             }
             catch (Exception)
             {
-                //TODO: Leviathan does not populate the list
+                throw new HttpRequestException("Leviathan failure");
             }
             return result;
         }
 
-        private HttpResponseMessage RecreateFromLoggedResponse(string filePath)
-        {
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException("Logged response file not found.", filePath);
 
-            string json = File.ReadAllText(filePath);
-            var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-
-            // Recreate response
-            var response = new HttpResponseMessage
-            {
-                StatusCode = (HttpStatusCode)root.GetProperty("StatusCode").GetInt32(),
-                ReasonPhrase = root.GetProperty("ReasonPhrase").GetString() ?? string.Empty,
-                Version = Version.Parse(root.GetProperty("Version").GetString() ?? "1.1"),
-                Content = new StringContent(root.GetProperty("Body").GetString() ?? "")
-            };
-
-            // Re-add content headers
-            foreach (var header in root.GetProperty("ContentHeaders").EnumerateObject())
-            {
-                foreach (var value in header.Value.EnumerateArray())
-                {
-                    response.Content.Headers.TryAddWithoutValidation(header.Name, value.GetString());
-                }
-            }
-
-            // Re-add general headers
-            foreach (var header in root.GetProperty("Headers").EnumerateObject())
-            {
-                foreach (var value in header.Value.EnumerateArray())
-                {
-                    response.Headers.TryAddWithoutValidation(header.Name, value.GetString());
-                }
-            }
-
-            return response;
-        }
-
-        private async void LogResponse(string filePath, HttpResponseMessage response)
-        {
-            // Ensure directory exists
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? "TestResponses");
-
-            // Capture metadata
-            var statusCode = response.StatusCode;
-            var reasonPhrase = response.ReasonPhrase;
-            var version = response.Version;
-            var headers = response.Headers;
-            var contentHeaders = response.Content.Headers;
-            var body = await response.Content.ReadAsStringAsync();
-
-            // Build a simple JSON object for storage
-            var logObject = new
-            {
-                StatusCode = (int)statusCode,
-                ReasonPhrase = reasonPhrase,
-                Version = version.ToString(),
-                Headers = headers.ToDictionary(h => h.Key, h => h.Value),
-                ContentHeaders = contentHeaders.ToDictionary(h => h.Key, h => h.Value),
-                Body = body
-            };
-
-            string json = JsonSerializer.Serialize(logObject, new JsonSerializerOptions { WriteIndented = true });
-            await File.WriteAllTextAsync(filePath, json);
-        }
-
+        // Helper method to save a live Leviathan API response from a text file for simpler testing
+        // To replicate a Leviathan-side data change, manually modify the saved text file for a given entity
         public async Task SaveHttpResponseToFile(HttpResponseMessage response, string filePath)
         {
             using var writer = new StreamWriter(filePath, false);
@@ -171,7 +108,7 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
             var content = await response.Content.ReadAsStringAsync();
             await writer.WriteLineAsync(content);
         }
-
+        // Helper method to recreate a live Leviathan API response from a text file for simpler testing
         public async Task<HttpResponseMessage> RecreateResponseFromText(string filePath)
         {
             var lines = await File.ReadAllLinesAsync(filePath);
@@ -196,6 +133,37 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
             var content = string.Join(Environment.NewLine, lines.Skip(i));
             response.Content = new StringContent(content);
 
+            return response;
+        }
+
+        // Helper methods to acquire HttpResponseMessage either from testing file or live API call
+        
+        public async Task<HttpResponseMessage> AquireResponse(bool testing, string testingFilePath, Uri uri)
+        {
+            return await AquireResponse(testing, testingFilePath, uri, null);
+        }
+        public async Task<HttpResponseMessage> AquireResponse(bool testing, string filePath, Uri uri, StringContent? httpstring)
+        {
+            var response = new HttpResponseMessage();
+            if (testing) // Recreates HttpResponseMessage from locally stored Leviathan API response.
+            {
+                response = await RecreateResponseFromText(filePath);
+            }
+            else // Live API Call
+            {
+                if (httpstring != null)
+                {
+                    response = await _http.PostAsync(uri, httpstring);
+                }
+                else
+                {
+                    response = await _http.GetAsync(uri);
+                }
+                if (!File.Exists(filePath)) // Initially saves live API response text as text file, which can manually be modified to replicate a Leviathan-side data change for testing purposes.
+                {
+                    await SaveHttpResponseToFile(response, filePath);
+                }
+            }
             return response;
         }
     }

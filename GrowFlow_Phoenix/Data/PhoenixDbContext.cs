@@ -18,8 +18,7 @@ namespace GrowFlow_Phoenix.Data
             return base.SaveChanges();
         }
 
-        public override Task<int> SaveChangesAsync(
-            CancellationToken cancellationToken = default)
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             ApplyAuditInfo();
             return base.SaveChangesAsync(cancellationToken);
@@ -51,7 +50,7 @@ namespace GrowFlow_Phoenix.Data
         }
 
         public DbSet<Employee> Employees => Set<Employee>();
-        public DbSet<LeviathanEmployeeCache> LeviathanSnapshotEntries => Set<LeviathanEmployeeCache>();
+        public DbSet<LeviathanEmployeeCache> LeviathanEmployeeCacheEntries => Set<LeviathanEmployeeCache>();
         public DbSet<EmployeeExternalId> EmployeeExternalIds => Set<EmployeeExternalId>();
 
     }
