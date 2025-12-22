@@ -4,7 +4,6 @@ using GrowFlow_Phoenix.Models.Leviathan;
 using GrowFlow_Phoenix.Models.Phoenix;
 using GrowFlow_Phoenix.Models.Utility.IUtility;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
 {
@@ -64,9 +63,10 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
 
                     if (existingCacheEntry == null)
                     {
-                        _db.LeviathanEmployeeCacheEntries.Add(existingCacheEntry!);
+                        _db.LeviathanEmployeeCacheEntries.Add(freshCacheEntry!);
                     }
 
+                    freshCacheEntry.Id = existingCacheEntry!.Id; // Preserve the existing cache entry's primary key
                     _db.Entry(existingCacheEntry!).CurrentValues.SetValues(freshCacheEntry);
                 }
 
@@ -81,7 +81,7 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
         public async Task SynceEmployeesFromSnapshot(CancellationToken stopToken)
         {
             var cacheEntries = await _db.LeviathanEmployeeCacheEntries.ToListAsync();
-            // Filters only phoenix employees that have a corresponding record in Leviathan already
+            //Filters only phoenix employees that have a corresponding record in Leviathan already
             var phoenixEmployees = await _db.Employees
                 .Include(e => e.ExternalIds)
                 .Where(e => e.ExternalIds
@@ -97,13 +97,10 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
                     var phoenixEmployeeMatch = phoenixEmployees[i];
                     var phoenixLeviathanExternalId = phoenixEmployeeMatch.ExternalIds.FirstOrDefault(x => x.Provider == _leviathanProviderName);
                     var cacheEntry = cacheEntries.FirstOrDefault(x => x.LeviathanId.ToString() == phoenixLeviathanExternalId!.ExternalId);
+                    
+                    _mapper.Map(cacheEntry, phoenixEmployeeMatch); // We consider Leviathan a source of truth so no validation is performed on whether it contains empty/null values, although it might be a good idea to do so
+                    _db.Update(phoenixEmployeeMatch!);
 
-                    // This always returns true since we've already fitlered above but it felt cool implementing a custom comparer so I am keeping it.
-                    if ((phoenixEmployeeMatch as IEmployeeComparable)?.IsEquivalent(cacheEntry!) == true) //Force not-null as we've already filtered phoenixEmployees to only those that have a corresponding cache entry
-                    {
-                        _mapper.Map(cacheEntry, phoenixEmployeeMatch); // We consider Leviathan a source of truth so no validation is performed on whether it contains empty/null values, although it might be a good idea to do so
-                        _db.Update(phoenixEmployeeMatch!);
-                    }
                 }
                 await _db.SaveChangesAsync(stopToken);
             }

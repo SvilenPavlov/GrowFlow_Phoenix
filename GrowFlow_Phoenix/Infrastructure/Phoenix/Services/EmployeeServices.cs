@@ -1,14 +1,12 @@
-﻿namespace GrowFlow_Phoenix.Infrastructure.Phoenix.Services
-{
-    using AutoMapper;
-    using GrowFlow_Phoenix.Data;
-    using GrowFlow_Phoenix.DTOs.Phoenix.Employee;
-    using GrowFlow_Phoenix.Infrastructure.Leviathan.Services;
-    using GrowFlow_Phoenix.Models;
-    using GrowFlow_Phoenix.Models.Phoenix;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using GrowFlow_Phoenix.Data;
+using GrowFlow_Phoenix.DTOs.Phoenix.Employee;
+using GrowFlow_Phoenix.Infrastructure.Leviathan.Services;
+using GrowFlow_Phoenix.Models.Phoenix;
+using Microsoft.EntityFrameworkCore;
 
+namespace GrowFlow_Phoenix.Infrastructure.Phoenix.Services
+{
     public class EmployeeService
     {
         private readonly PhoenixDbContext _db;

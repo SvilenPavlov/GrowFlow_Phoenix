@@ -1,5 +1,4 @@
 ﻿using GrowFlow_Phoenix.Models.Utility;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace GrowFlow_Phoenix.DTOs.Leviathan.Employee
@@ -18,7 +17,7 @@ namespace GrowFlow_Phoenix.DTOs.Leviathan.Employee
         [JsonPropertyName("role")]
         [JsonConverter(typeof(JsonStringConverter))]
         public string Role { get; set; } = null!;
-        //Leviathan accepts non-email values
+        
         [JsonPropertyName("email")]
         [JsonConverter(typeof(JsonStringConverter))]
         public string? Email { get; set; }

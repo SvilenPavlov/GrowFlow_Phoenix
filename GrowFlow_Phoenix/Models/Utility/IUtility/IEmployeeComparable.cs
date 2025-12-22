@@ -1,6 +1,7 @@
 ﻿namespace GrowFlow_Phoenix.Models.Utility.IUtility
 {
-    public interface IEmployeeComparable
+    // I used this temporarily to compare entity values between Dtos and Employee but it appears obsolete now. I kept it here because it felt cool to implement.
+    public interface IEmployeeComparable 
     {
         string FirstName { get; }
         string LastName { get; }

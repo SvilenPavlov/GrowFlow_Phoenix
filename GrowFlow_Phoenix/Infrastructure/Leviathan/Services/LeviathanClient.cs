@@ -50,7 +50,6 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
 
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException("Leviathan failure");
-            // TODO: Leviathan does not return ID cleanly — document this in README
 
             return responseDto.LeviathanId;
         }

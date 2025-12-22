@@ -1,23 +1,16 @@
-﻿using AutoMapper;
-using GrowFlow_Phoenix.Data;
-using GrowFlow_Phoenix.DTOs.Leviathan.Employee;
-using GrowFlow_Phoenix.Models;
-using GrowFlow_Phoenix.Models.Leviathan;
-using GrowFlow_Phoenix.Models.Phoenix;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-
-namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
+﻿namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
 {
     public class LeviathanSyncService : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<LeviathanSyncService> _logger;
-        
-        public LeviathanSyncService(ILogger<LeviathanSyncService> logger, IServiceScopeFactory scopeFactory)
+        private readonly int _delayMinutes;
+
+        public LeviathanSyncService(ILogger<LeviathanSyncService> logger, IServiceScopeFactory scopeFactory, IConfiguration configuration)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
+            _delayMinutes = configuration.GetValue<int>("LeviathanApi:Settings:SyncDelay");
         }
 
         protected override async Task ExecuteAsync(CancellationToken stopToken)
@@ -30,7 +23,7 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
             {
                 try
                 {
-                    await manager.RetryUnsuccesfullySyncedEmployees(stopToken);
+                    //await manager.RetryUnsuccesfullySyncedEmployees(stopToken);
                 }
                 catch (Exception ex)
                 {
@@ -56,7 +49,7 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
                 }
 
                 // Wait 5 minutes
-                await Task.Delay(TimeSpan.FromMinutes(5), stopToken);
+                await Task.Delay(TimeSpan.FromMinutes(_delayMinutes), stopToken);
             }
         }
 

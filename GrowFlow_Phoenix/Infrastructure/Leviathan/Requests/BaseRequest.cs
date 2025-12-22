@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Requests
 {

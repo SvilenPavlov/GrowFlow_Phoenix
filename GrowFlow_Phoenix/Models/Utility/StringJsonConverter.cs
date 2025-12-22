@@ -13,7 +13,7 @@ namespace GrowFlow_Phoenix.Models.Utility
                 case JsonTokenType.String:
                     return reader.GetString()!;
                 case JsonTokenType.Number:
-                    return reader.GetDouble().ToString(); // covers int, long, double
+                    return reader.GetDouble().ToString();
                 case JsonTokenType.True:
                 case JsonTokenType.False:
                     return reader.GetBoolean().ToString();
