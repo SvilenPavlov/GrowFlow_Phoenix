@@ -5,13 +5,10 @@ namespace GrowFlow_Phoenix.DTOs.Phoenix.Employee
 {
     public class EmployeeResponseDTO
     {
-        [Required]
         [JsonPropertyName("FirstName")]
-        public string FirstName { get; set; }
-        [Required]
+        public string FirstName { get; set; } = null!;
         [JsonPropertyName("LastName")]
-        public string LastName { get; set; }
-        [Required]
+        public string LastName { get; set; } = null!;
         [JsonPropertyName("Telephone")]
         public string Telephone { get; set; } = null!;
         [JsonPropertyName("Role")]

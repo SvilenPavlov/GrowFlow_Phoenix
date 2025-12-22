@@ -28,7 +28,6 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
             _mapper = mapper;
             _http.BaseAddress = new Uri(configuration.GetValue<string>("LeviathanApi:BaseURL"));
             _employeeEndpoint = configuration.GetValue<string>("LeviathanApi:Endpoints:EmployeeEndpoint");
-            _mapper = mapper;
             _isTesting = configuration.GetValue<bool>("LeviathanApi:Settings:UseLocalResponse");
         }
 
@@ -39,13 +38,10 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
             var request = new PayloadRequest<EmployeeCreateDTO>(requestDto);
             var jsonRequest = JsonSerializer.Serialize(request);
             var httpContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-
             Uri uri = new Uri(_employeeEndpoint, UriKind.Relative);
             
             var response = await AquireResponse(_isTesting, _testFilePathCreate, uri, httpContent);
-
-
-
+            
             var responseJson = await response.Content.ReadAsStringAsync();
             var responseDto = JsonSerializer.Deserialize<EmployeeResponseDTO>(responseJson);
 
@@ -54,7 +50,7 @@ namespace GrowFlow_Phoenix.Infrastructure.Leviathan.Services
 
             if (!response.IsSuccessStatusCode)
                 throw new HttpRequestException("Leviathan failure");
-            // Leviathan does not return ID cleanly — document this in README
+            // TODO: Leviathan does not return ID cleanly — document this in README
 
             return responseDto.LeviathanId;
         }

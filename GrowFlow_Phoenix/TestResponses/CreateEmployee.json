@@ -1,0 +1,19 @@
+StatusCode: BadRequest
+--- Headers ---
+Connection: keep-alive
+Access-Control-Allow-Origin: *
+ETag: W/"28-1AoDtCNj5XuzetZbfaCQwZFini0"
+Server: Google, Frontend
+Traceparent: 00-cc774fa388316a44752250a4d7d266d9-d68f3cb2ce2eff6a-00
+X-Cloud-Trace-Context: cc774fa388316a44752250a4d7d266d9/15460642784447233898
+X-Powered-By: Express
+Accept-Ranges: bytes
+Date: Mon, 22 Dec 2025 07:49:50 GMT
+X-Served-By: cache-sof1510030-SOF
+X-Cache: MISS
+X-Cache-Hits: 0
+X-Timer: S1766389790.700254,VS0,VE1273
+Vary: x-fh-requested-host, accept-encoding
+Alt-Svc: h3=":443", h3-29=":443", h3-27=":443"
+--- Content ---
+Invalid request, missing required fields

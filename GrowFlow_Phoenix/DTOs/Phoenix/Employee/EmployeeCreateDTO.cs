@@ -1,17 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GrowFlow_Phoenix.Models.Utility;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace GrowFlow_Phoenix.DTOs.Phoenix.Employee
 {
     public class EmployeeCreateDTO
     {
-        [Required]
+        [NotEmptyOrWhitespace]
         [JsonPropertyName("FirstName")]
         public string FirstName { get; set; } = null!;
-        [Required]
+        [NotEmptyOrWhitespace]
         [JsonPropertyName("LastName")]
         public string LastName { get; set; } = null!;
-        [Required]
+        [NotEmptyOrWhitespace]
         [JsonPropertyName("Telephone")]
         public string Telephone { get; set; } = null!;
         [JsonPropertyName("Role")]
