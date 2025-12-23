@@ -1,6 +1,6 @@
 # GrowFlow_Phoenix
 
-**Phoenix** is a .NET 9 Web API designed as a tenant-scoped interface for GrowFlow customers. It provides CRUD operations for Employees, Customers, and Orders, and can synchronize with a mock regulatory traceability API, Leviathan.
+**Phoenix** is a .NET 9 Web API designed as a tenant-scoped interface for GrowFlow customers. It provides CRUD operations for Employees entities and can synchronize with a mock regulatory traceability API, Leviathan.
 
 ---
 
